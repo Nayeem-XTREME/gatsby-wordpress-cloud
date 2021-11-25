@@ -128,5 +128,18 @@ module.exports = {
     // this (optional) plugin enables Progressive Web App + Offline functionality
     // To learn more, visit: https://gatsby.dev/offline
     // `gatsby-plugin-offline`,
+    {
+      resolve: `gatsby-source-wordpress`,
+      options: {
+        url: `https://devclubswan.wpengine.com/graphql`,
+        verbose: true,
+        schema: {
+          perPage: 20,
+        },
+        develop: {
+          hardCacheData: false,
+        },
+      },
+    },
   ],
 }

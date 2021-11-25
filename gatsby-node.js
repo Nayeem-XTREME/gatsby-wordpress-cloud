@@ -6,6 +6,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
 
   // Define a template for blog post
   const blogPost = path.resolve(`./src/templates/blog-post.js`)
+  const wpBlogPost = path.resolve(`./src/templates/wp-blog-post.js`)
 
   // Get all markdown blog posts sorted by date
   const result = await graphql(
@@ -22,6 +23,12 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
             }
           }
         }
+        allWpPost {
+          nodes {
+            id
+            slug
+          }
+        }
       }
     `
   )
@@ -35,6 +42,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   }
 
   const posts = result.data.allMarkdownRemark.nodes
+  const wpPosts = result.data.allWpPost.nodes
 
   // Create blog posts pages
   // But only if there's at least one markdown file found at "content/blog" (defined in gatsby-config.js)
@@ -52,6 +60,18 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
           id: post.id,
           previousPostId,
           nextPostId,
+        },
+      })
+    })
+  }
+
+  if (wpPosts.length > 1) {
+    wpPosts.forEach((post, index) => {
+      createPage({
+        path: `/wp/${post.slug}`,
+        component: wpBlogPost,
+        context: {
+          id: post.id,
         },
       })
     })
